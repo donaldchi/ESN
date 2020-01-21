@@ -6,6 +6,6 @@ Echo State Networkを実装する
 - [EchoStateNetworkをtf.kerasで書いてみた](https://qiita.com/k-kotera/items/f87ae8d04ad3962454d2)
 
 # 以下のことを目指す
-- 全ての変種をカーバー
+- ESNの色んな変種をカーバー
 - 大容量データを対応可能に
 - 高速、省メモを目指す

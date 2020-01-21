@@ -4,9 +4,10 @@ from scipy import linalg
 
 class ReservoirNetWork:
 
-    def __init__(self, inputs, num_input_nodes, num_reservoir_nodes, num_output_nodes, leak_rate=0.1, activator=np.tanh):
-        self.inputs = inputs # 学習で使う入力
-        self.log_reservoir_nodes = np.array([np.zeros(num_reservoir_nodes)]) # reservoir層のノードの状態を記録
+    def __init__(self, inputs, num_input_nodes, num_reservoir_nodes,
+                 num_output_nodes, leak_rate=0.1, activator=np.tanh):
+        self.inputs = inputs  # 学習で使う入力
+        self.log_reservoir_nodes = np.array([np.zeros(num_reservoir_nodes)])  # reservoir層のノードの状態を記録
 
         # init weights
         self.weights_input = self._generate_variational_weights(num_input_nodes, num_reservoir_nodes)
@@ -18,20 +19,19 @@ class ReservoirNetWork:
         self.num_reservoir_nodes = num_reservoir_nodes
         self.num_output_nodes = num_output_nodes
 
-        self.leak_rate = leak_rate # 漏れ率
-        self.activator = activator # 活性化関数
+        self.leak_rate = leak_rate  # 漏れ率
+        self.activator = activator  # 活性化関数
 
     # reservoir層のノードの次の状態を取得
     def _get_next_reservoir_nodes(self, input, current_state):
         next_state = (1 - self.leak_rate) * current_state
-        next_state += self.leak_rate * (np.array([input]) @ self.weights_input
-            + current_state @ self.weights_reservoir)
+        next_state += self.leak_rate * (np.array([input]) @ self.weights_input + current_state @ self.weights_reservoir)
         return self.activator(next_state)
 
     # 出力層の重みを更新
     def _update_weights_output(self, lambda0):
         # Ridge Regression
-        E_lambda0 = np.identity(self.num_reservoir_nodes) * lambda0 # lambda0
+        E_lambda0 = np.identity(self.num_reservoir_nodes) * lambda0  # lambda0
         inv_x = np.linalg.inv(self.log_reservoir_nodes.T @ self.log_reservoir_nodes + E_lambda0)
         # update weights of output layer
         self.weights_output = (inv_x @ self.log_reservoir_nodes.T) @ self.inputs
